@@ -5,18 +5,17 @@ from PySide6.QtCore import Qt
 from datetime import datetime
 from dotenv import load_dotenv
 
-# Cargar variables de entorno desde el archivo .env
-load_dotenv()
-
-# Configuración de MongoDB desde variables de entorno
-MONGODB_CONNECTION_STRING = "mongodb+srv://tendencias:1234@transcripciones.2bftm.mongodb.net/?retryWrites=true&w=majority&appName=Transcripciones"
-MONGODB_DATABASE_NAME = "Transcripcion"
-MONGODB_COLLECTION_NAME = "Texto_de_Transcripcion"
+from src.core.config import Config
 
 # Conectar a MongoDB
-client = MongoClient(MONGODB_CONNECTION_STRING)
-db = client[MONGODB_DATABASE_NAME]
-collection = db[MONGODB_COLLECTION_NAME]
+try:
+    client = MongoClient(Config.MONGODB_CONNECTION_STRING)
+    db = client[Config.MONGODB_DATABASE_NAME]
+    collection = db[Config.MONGODB_COLLECTION_NAME]
+except Exception as e:
+    print(f"Error al conectar con MongoDB: {e}")
+    # Fallback o manejo de error podría ir aquí
+
 
 def save_transcription_to_mongodb(transcription_name, transcription_text, mode="monologo"):
     """Guarda la transcripción en MongoDB con un nombre ingresado por el usuario."""
